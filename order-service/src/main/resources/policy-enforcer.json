@@ -1,0 +1,27 @@
+{
+  "realm": "kane-dev",
+  "auth-server-url": "http://127.0.0.1:8082",
+  "resource": "springboot-be",
+  "credentials": {
+    "secret": "XTb7QWXCItdiengoEVKVjwO7aHzaJTi4"
+  },
+  "http-method-as-scope": true,
+  "paths" : [
+    {
+      "path": "/swagger-ui/*",
+      "enforcement-mode": "DISABLED"
+    },
+    {
+      "path": "/v3/api-docs/*",
+      "enforcement-mode": "DISABLED"
+    },
+    {
+      "path": "/order",
+      "enforcement-mode": "ENFORCING"
+    },
+    {
+      "path": "/order/test",
+      "enforcement-mode": "DISABLED"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+version: "3.6"
+
+services:
+  kong_gateway:
+    image: kong/kong-gateway:3.7.1.2
+    container_name: kong_gateway
+    depends_on:
+      - kong_gateway_db
+    ports:
+      - 8000:8000
+      - 8443:8443
+      - 8001:8001
+      - 8444:8444
+      - 8002:8002
+      - 8445:8445
+      - 8003:8003
+      - 8004:8004
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong_gateway_db
+      KONG_PG_USER: ${POSTGRES_DB}
+      KONG_PG_PASSWORD: ${POSTGRES_PASSWORD}
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_ADMIN_GUI_URL: http://localhost:8002
+#      host: docker.for.mac.localhost
+    #    command: kong migrations bootstrap
+    networks:
+      - kong_gateway-network
+
+  kong_gateway_db:
+    image: postgres:13
+    container_name: kong_gateway_db
+    ports:
+      - ${POSTGRES_HOST_PORT}:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - kong_gateway_db-volume:/var/lib/postgresql/data
+    networks:
+      - kong_gateway-network
+
+networks:
+  kong_gateway-network:
+    driver: bridge
+
+volumes:
+  kong_gateway_db-volume:

@@ -1,0 +1,49 @@
+version: "3.6"
+
+services:
+  keycloak_web:
+    image: quay.io/keycloak/keycloak:25.0.2
+    container_name: keycloak_web
+    environment:
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://keycloak_db:3306/${MYSQL_DATABASE}
+      KC_DB_USERNAME: ${MYSQL_USER}
+      KC_DB_PASSWORD: ${MYSQL_PASSWORD}
+      KC_HOSTNAME: ${KC_HOSTNAME}
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_LOG_LEVEL: info
+      KC_METRICS_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    depends_on:
+      - keycloak_db
+    ports:
+      - ${KC_HOST_PORT}:8080
+    networks:
+      - keycloak-network
+
+  keycloak_db:
+    image: mysql:oracle
+    container_name: keycloak_db
+    ports:
+      - ${MYSQL_HOST_PORT}:3306
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - keycloak_db-volume:/var/lib/mysql
+    networks:
+      - keycloak-network
+
+networks:
+  keycloak-network:
+    driver: bridge
+
+volumes:
+  keycloak_db-volume:

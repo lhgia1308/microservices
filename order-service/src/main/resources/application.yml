@@ -1,0 +1,35 @@
+server:
+  port: 8086
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: jdbc:mysql://localhost:8085/orderdb?characterEncoding=utf8&rewriteBatchedStatements=true
+    username: user2024
+    password: 123456
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 5
+        order_inserts: true
+        ddl-auto: create-drop
+    generate-ddl: true
+    show-sql: true
+  kafka:
+    bootstrap-servers: localhost:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: springboot-be
+      client-secret: XTb7QWXCItdiengoEVKVjwO7aHzaJTi4
+keycloak:
+  realm: kane-dev
+  server-url: http://127.0.0.1:8082
+  client-id: admin-cli
+  grant-type: password
+  username: userclient
+  password: 123456

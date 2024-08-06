@@ -1,0 +1,23 @@
+version: "3.6"
+
+services:
+  notification_db:
+    image: mongo:5.0.28
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=notidb
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - ./mongo-entrypoint:/docker-entrypoint-initdb.d
+      - notification_db-volume:/data/db
+    networks:
+      - notification-network
+
+networks:
+  notification-network:
+    driver: bridge
+
+volumes:
+  notification_db-volume:

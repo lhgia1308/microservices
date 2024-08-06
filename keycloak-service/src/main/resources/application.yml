@@ -1,0 +1,17 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: keycloak-service
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: springboot-be
+      client-secret: XTb7QWXCItdiengoEVKVjwO7aHzaJTi4
+keycloak:
+  realm: kane-dev
+  server-url: http://127.0.0.1:8082
+  client-id: admin-cli
+  grant-type: password
+  username: userclient
+  password: 123456
