@@ -32,10 +32,11 @@ public enum ErrorCodes {
     INVALID_EMAIL(1018, "Invalid email", HttpStatus.BAD_REQUEST),
     INVALID_DOB(1019, "Birthday must be over ${min}", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD(1020, "Password must be at least ${min} characters including at least 1 uppercase, 1 special letter and 1 number", HttpStatus.BAD_REQUEST),
-    USER_EXISTED(1021, "User already existed", HttpStatus.CONFLICT),
+    USER_EXISTED(1021, "Email or Username existed", HttpStatus.CONFLICT),
     INVALID_TEMPLATE(1022, "Invalid template", HttpStatus.BAD_REQUEST),
     NOT_FOUND(1023, "Not found", HttpStatus.NOT_FOUND),
     CONFLICT(1024, "Data existed", HttpStatus.CONFLICT),
+    ROLE_NOT_FOUND(1025, "${roleName} Role Not found", HttpStatus.NOT_FOUND),
     ;
     Integer code;
     String message;

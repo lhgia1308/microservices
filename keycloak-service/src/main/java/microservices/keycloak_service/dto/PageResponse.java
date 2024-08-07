@@ -19,9 +19,16 @@ public class PageResponse<T> {
     private boolean first;
     private boolean last;
 
-    public static final PageResponse fromPage(Page page) {
+    public static PageResponse mapPageResponse(Page<String> page) {
         return PageResponse.builder()
+                .first(page.isFirst())
+                .last(page.isLast())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .totalElements(page.getTotalElements())
+                .pageSize(page.getSize())
                 .currentPage(page.getNumber())
+                .data(page.get())
                 .build();
     }
 }

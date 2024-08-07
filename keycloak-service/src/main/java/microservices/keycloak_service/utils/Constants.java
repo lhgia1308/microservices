@@ -11,4 +11,6 @@ public class Constants {
     public static String SUCCESS = "Successfully";
     public static String ERROR = "Error";
     public static String NOT_NULL_QUERY = "Keyword is not null or empty";
+    public static final String DEFAULT_PAGE_NO = "0";
+    public static final String DEFAULT_PAGE_SIZE = "10";
 }
