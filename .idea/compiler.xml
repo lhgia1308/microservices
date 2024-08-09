@@ -7,14 +7,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="profile-service" />
-        <module name="order-service" />
         <module name="restaurant-service" />
         <module name="keycloak-service" />
+        <module name="profile-service" />
+        <module name="order-service" />
         <module name="menu-service" />
         <module name="notification-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="custom-policy-provider" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

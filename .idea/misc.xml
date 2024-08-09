@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/restaurant-service/pom.xml" />
         <option value="$PROJECT_DIR$/notification-service/pom.xml" />
         <option value="$PROJECT_DIR$/keycloak-service/pom.xml" />
+        <option value="$PROJECT_DIR$/keycloak/custom-policy-provider/src/pom.xml" />
       </list>
     </option>
   </component>

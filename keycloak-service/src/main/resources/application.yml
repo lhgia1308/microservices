@@ -3,6 +3,11 @@ server:
 spring:
   application:
     name: keycloak-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8082/realms/kane-dev
 springdoc:
   swagger-ui:
     oauth:

@@ -17,10 +17,13 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.common.util.CollectionUtil;
+import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -115,6 +118,16 @@ public class UserService {
     public UserResponse updateUser(Map<String, Object> params) {
         String userId = (String) params.get("userId");
         UserUpdateRequest userRequest = (UserUpdateRequest) params.get("userRequest");
+        Jwt jwt = (Jwt) params.get("jwt");
+
+//        String loginUserId = jwt.getSubject();
+//        Map<String, Object> realmAccessObj = (Map<String, Object>) jwt.getClaims().get("realm_access");
+//        List<String> loginUserRoles = (List<String>) realmAccessObj.get("roles");
+//
+//        if(!loginUserId.equals(userId) && !loginUserRoles.contains("admin")) {
+//            throw new AppException(ErrorCodes.UNAUTHORIZED, ErrorCodes.UNAUTHORIZED.getMessage());
+//        }
+
         Keycloak keycloak = keycloakSecurityUtil.getKeycloakInstance();
 
         UserResource userResource = keycloak.realm(realm).users().get(userId);

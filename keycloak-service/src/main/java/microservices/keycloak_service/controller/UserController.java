@@ -14,8 +14,14 @@ import microservices.keycloak_service.dto.response.UserResponse;
 import microservices.keycloak_service.service.UserService;
 import microservices.keycloak_service.utils.Constants;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +60,13 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ApiResponse<UserResponse> updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest userRequest) {
+    @PreAuthorize("#userId == authentication.name || hasAuthority('admin')") //before
+//    @PostAuthorize("returnObject.data.id == authentication.principal.nickName") //after
+    public ApiResponse<UserResponse> updateUser(
+            @PathVariable String userId,
+            @RequestBody UserUpdateRequest userRequest,
+            Authentication authentication
+    ) {
         Map<String, Object> args = new HashMap<>();
         args.put("userId", userId);
         args.put("userRequest", userRequest);
