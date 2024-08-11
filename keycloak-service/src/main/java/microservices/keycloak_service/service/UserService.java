@@ -90,6 +90,34 @@ public class UserService {
          }
     }
 
+    public List<UserResponse> getUserByUserName(Map<String, Object> params) {
+        String userName = (String) params.get("userName");
+        Keycloak keycloak = keycloakSecurityUtil.getKeycloakInstance();
+
+        try {
+            List<UserRepresentation> userReps = keycloak.realm(realm).users().searchByUsername(userName, false);
+
+            List<UserResponse> userResponses = new ArrayList<>();
+            userReps.forEach(
+                    userRep -> {
+                        UserResource userResource = keycloak.realm(realm).users().get(userRep.getId());
+                        UserResponse userResponse = UserResponse.mapUserResponse(
+                                Map.ofEntries(
+                                    Map.entry("userRepresentation", userRep),
+                                    Map.entry("userResource", userResource)
+                                )
+                        );
+                        userResponses.add(userResponse);
+                    }
+            );
+
+            return userResponses;
+        }
+        catch (Exception e) {
+            throw new AppException(ErrorCodes.OTHER_ERROR, e.getMessage());
+        }
+    }
+
     public UserResponse createUser(Map<String, Object> params) {
         UserRequest userRequest = (UserRequest) params.get("userRequest");
         Keycloak keycloak = keycloakSecurityUtil.getKeycloakInstance();
@@ -239,5 +267,20 @@ public class UserService {
                         Map.entry("userResource", userResource)
                 )
         );
+    }
+
+    public String deleteUserByUserName(Map<String, Object> params) {
+        List<String> userNames = (List<String>) params.get("userNames");
+        Keycloak keycloak = keycloakSecurityUtil.getKeycloakInstance();
+        UsersResource usersResource = keycloak.realm(realm).users();
+
+        userNames.forEach(userName -> {
+            List<UserRepresentation> userReps = usersResource.searchByUsername(userName, true);
+            for (UserRepresentation userRep : userReps) {
+                usersResource.delete(userRep.getId());
+            }
+        });
+
+        return CollectionUtil.join(userNames, ",");
     }
 }

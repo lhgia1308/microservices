@@ -5,7 +5,7 @@
   "credentials": {
     "secret": "XTb7QWXCItdiengoEVKVjwO7aHzaJTi4"
   },
-  "http-method-as-scope": true,
+  "http-method-as-scope": false,
   "paths" : [
     {
       "path": "/swagger-ui/*",
@@ -29,12 +29,12 @@
       "enforcement-mode": "ENFORCING"
     },
     {
-      "path": "/keycloak/user/list",
-      "enforcement-mode": "DISABLED"
-    },
-    {
       "path": "/keycloak/user/*",
       "enforcement-mode": "ENFORCING"
+    },
+    {
+      "path": "/keycloak/user/list",
+      "enforcement-mode": "DISABLED"
     }
   ]
 }

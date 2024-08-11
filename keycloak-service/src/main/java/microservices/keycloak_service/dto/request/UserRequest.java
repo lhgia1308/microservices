@@ -1,13 +1,12 @@
 package microservices.keycloak_service.dto.request;
 
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
+import microservices.keycloak_service.validator.PasswordConstraint;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,10 +15,12 @@ public class UserRequest {
 
     private String lastName;
 
+    @Email(message = "INVALID_EMAIL")
     private String email;
 
     private String userName;
 
+    @PasswordConstraint(min = 8)
     private String password;
 
     public static UserRepresentation mapUserRepresentation(UserRequest userRequest) {

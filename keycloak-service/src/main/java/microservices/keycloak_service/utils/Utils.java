@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
     public static Page<String> paginate(Map<String, Object> params) {
@@ -34,5 +36,17 @@ public class Utils {
         StringSubstitutor sub = new StringSubstitutor(newValues);
         String newTemplate = sub.replace(template);
         return newTemplate;
+    }
+
+    public static boolean isValidPassword(String password, Integer length) {
+        if(password.length() < length) {
+            return false;
+        }
+
+        String regexPattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\\$&*~]).{8,}$";
+        Pattern pattern = Pattern.compile(regexPattern);
+        Matcher matcher = pattern.matcher(password);
+
+        return matcher.matches();
     }
 }

@@ -1,27 +1,21 @@
 package microservices.keycloak_service.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import lombok.AccessLevel;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import microservices.keycloak_service.dto.ApiResponse;
 import microservices.keycloak_service.dto.PageResponse;
 import microservices.keycloak_service.dto.Role;
-import microservices.keycloak_service.dto.request.RoleRequest;
 import microservices.keycloak_service.dto.request.UserRequest;
 import microservices.keycloak_service.dto.request.UserUpdateRequest;
 import microservices.keycloak_service.dto.response.UserResponse;
 import microservices.keycloak_service.service.UserService;
 import microservices.keycloak_service.utils.Constants;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +24,6 @@ import java.util.Map;
 @RequestMapping("/keycloak/user")
 @SecurityRequirement(name = "Keycloak")
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
     private final UserService userService;
 
@@ -46,14 +39,26 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
+    @PreAuthorize("#userId == authentication.name || hasAuthority('admin')")
     public ApiResponse<UserResponse> getUser(@PathVariable String userId) {
         Map<String, Object> args = new HashMap<>();
         args.put("userId", userId);
         return new ApiResponse<>(Constants.SUCCESS, HttpStatus.OK.value(), userService.getUser(args));
     }
 
+    @GetMapping("/username/{userName}")
+    public ApiResponse<List<UserResponse>> getUserByUserName(@PathVariable String userName) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("userName", userName);
+        return new ApiResponse<>(Constants.SUCCESS, HttpStatus.OK.value(), userService.getUserByUserName(args));
+    }
+
     @PostMapping
-    public ApiResponse<UserResponse> createUser(@RequestBody UserRequest userRequest) {
+    @PreAuthorize("hasAuthority('admin')")
+    public ApiResponse<UserResponse> createUser(
+            @RequestBody @Valid UserRequest userRequest,
+            Authentication authentication
+    ) {
         Map<String, Object> args = new HashMap<>();
         args.put("userRequest", userRequest);
         return new ApiResponse<>(Constants.SUCCESS, HttpStatus.OK.value(), userService.createUser(args));
@@ -74,13 +79,23 @@ public class UserController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAnyAuthority('admin', 'manager')")
     public ApiResponse deleteUsers(@RequestBody List<String> userIds) {
         Map<String, Object> args = new HashMap<>();
         args.put("userIds", userIds);
         return new ApiResponse<>(Constants.SUCCESS, HttpStatus.OK.value(), userService.deleteUsers(args));
     }
 
+    @DeleteMapping("/username")
+    @PreAuthorize("hasAnyAuthority('admin', 'manager')")
+    public ApiResponse deleteUserByUserName(@RequestBody List<String> userNames) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("userNames", userNames);
+        return new ApiResponse<>(Constants.SUCCESS, HttpStatus.OK.value(), userService.deleteUserByUserName(args));
+    }
+
     @GetMapping("/{userId}/roles")
+    @PreAuthorize("#userId == authentication.name || hasAuthority('admin')")
     public ApiResponse<List<Role>> getUserRoles(@PathVariable String userId) {
         Map<String, Object> args = new HashMap<>();
         args.put("userId", userId);
@@ -88,6 +103,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/roles")
+    @PreAuthorize("hasAuthority('admin')")
     public ApiResponse<UserResponse> createUserRole(@PathVariable String userId, @RequestBody List<String> roleRequestList) {
         Map<String, Object> args = new HashMap<>();
         args.put("userId", userId);
@@ -96,6 +112,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/roles/revoke")
+    @PreAuthorize("hasAuthority('admin')")
     public ApiResponse<UserResponse> revokeUserRole(@PathVariable String userId, @RequestBody List<String> roleRequestList) {
         Map<String, Object> args = new HashMap<>();
         args.put("userId", userId);
